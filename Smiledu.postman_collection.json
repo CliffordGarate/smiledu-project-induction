@@ -1,0 +1,150 @@
+{
+	"info": {
+		"_postman_id": "8a9d2b3b-c3df-431f-bb2f-cc9f96f0dc06",
+		"name": "Smiledu",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "listar estudiantes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url_local}}/personas/list",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"personas",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registrar estudiante",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "nombre",
+							"value": "Miguel",
+							"type": "text"
+						},
+						{
+							"key": "ape_pat",
+							"value": "Ramirez",
+							"type": "text"
+						},
+						{
+							"key": "ape_mat",
+							"value": "Palomino",
+							"type": "text"
+						},
+						{
+							"key": "fecha_nac",
+							"value": "2018-05-10",
+							"type": "text"
+						},
+						{
+							"key": "id_grado",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "foto",
+							"type": "file",
+							"src": "/Users/itd/Downloads/A4 (3).png"
+						},
+						{
+							"key": "nivel",
+							"value": "INI",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url_local}}/personas/register",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"personas",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "listar movimientos de un estudiante",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url_local}}/movimientos/list/15",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"movimientos",
+						"list",
+						"15"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "actualizar estado movimiento",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id_movimiento\":5,\n    \"estado\":\"PAGADO\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_local}}/movimientos/actualizar_estado",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"movimientos",
+						"actualizar_estado"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "listar grados",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url_local}}/personas/list-grados",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"personas",
+						"list-grados"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
