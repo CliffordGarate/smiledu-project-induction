@@ -59,7 +59,7 @@ ALTER FUNCTION public.actualizarestadomovimiento(idmovimiento integer, estadomov
 -- Name: listarestudiantes(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.listarestudiantes() RETURNS TABLE(id_persona integer, nom_persona character varying, ape_pate_pers character varying, ape_mate_pers character varying, edad character varying, foto_ruta text, id_grado integer)
+CREATE FUNCTION public.listarestudiantes() RETURNS TABLE(id_persona integer, nom_persona character varying, ape_pate_pers character varying, ape_mate_pers character varying, edad character varying, foto_ruta text, id_grado integer, grado character varying, nivel character varying)
     LANGUAGE plpgsql
     AS $$
 BEGIN        
@@ -69,7 +69,9 @@ BEGIN
 	ape_mate_pers,
 	edad,
 	foto_ruta,
-	id_grado IN 
+	id_grado,
+	grado,
+	nivel IN 
      select 
 	persona.id_persona,
 	persona.nom_persona,
@@ -77,8 +79,10 @@ BEGIN
 	persona.ape_mate_pers,
 	obtenerEdadEstudiante(current_date,persona.fecha_naci) as edad,
 	persona.foto_ruta,
-	persona.id_grado
-	from persona
+	persona.id_grado,
+	grado.desc_grado,
+	grado.nivel
+	from persona inner join grado on persona.id_grado = grado.id_grado order by persona.id_persona desc
   LOOP
     RETURN NEXT;
   END LOOP;
@@ -454,7 +458,6 @@ COPY public.grado (id_grado, desc_grado, nivel) FROM stdin;
 14	Tercero	SEC
 15	Cuarto	SEC
 16	Quinto	SEC
-17	Sexto	SEC
 18	Nido	INI
 \.
 
@@ -464,40 +467,61 @@ COPY public.grado (id_grado, desc_grado, nivel) FROM stdin;
 --
 
 COPY public.movimiento (id_movimiento, tipo_movimiento, monto, estado, fecha_pago, id_persona, id_detalle_cronograma) FROM stdin;
-1	INGRESO	300.00	POR PAGAR	2020-02-28	1	1
-6	INGRESO	300.00	POR PAGAR	\N	2	5
-7	INGRESO	300.00	POR PAGAR	\N	2	6
-8	INGRESO	300.00	POR PAGAR	\N	2	7
-9	INGRESO	300.00	POR PAGAR	\N	2	8
-10	INGRESO	300.00	POR PAGAR	\N	2	9
-11	INGRESO	300.00	POR PAGAR	\N	2	10
-12	INGRESO	300.00	POR PAGAR	\N	2	11
-14	INGRESO	450.00	POR PAGAR	\N	6	12
-15	INGRESO	450.00	POR PAGAR	\N	6	13
-16	INGRESO	450.00	POR PAGAR	\N	6	14
-17	INGRESO	450.00	POR PAGAR	\N	6	15
-18	INGRESO	450.00	POR PAGAR	\N	6	16
-19	INGRESO	450.00	POR PAGAR	\N	6	17
-20	INGRESO	450.00	POR PAGAR	\N	6	18
-21	INGRESO	450.00	POR PAGAR	\N	6	19
-22	INGRESO	450.00	POR PAGAR	\N	6	20
-23	INGRESO	450.00	POR PAGAR	\N	6	21
-24	INGRESO	450.00	POR PAGAR	\N	6	22
-2	INGRESO	300.00	PAGADO	2020-11-29	2	1
-3	INGRESO	300.00	PAGADO	2020-11-29	2	2
-4	INGRESO	300.00	PAGADO	2020-11-29	2	3
-5	INGRESO	300.00	PAGADO	2020-11-29	2	4
-25	INGRESO	300.00	POR PAGAR	\N	15	1
-26	INGRESO	300.00	POR PAGAR	\N	15	2
-27	INGRESO	300.00	POR PAGAR	\N	15	3
-28	INGRESO	300.00	POR PAGAR	\N	15	4
-29	INGRESO	300.00	POR PAGAR	\N	15	5
-30	INGRESO	300.00	POR PAGAR	\N	15	6
-31	INGRESO	300.00	POR PAGAR	\N	15	7
-32	INGRESO	300.00	POR PAGAR	\N	15	8
-33	INGRESO	300.00	POR PAGAR	\N	15	9
-34	INGRESO	300.00	POR PAGAR	\N	15	10
-35	INGRESO	300.00	POR PAGAR	\N	15	11
+82	INGRESO	540.00	POR PAGAR	\N	25	25
+83	INGRESO	540.00	POR PAGAR	\N	25	26
+84	INGRESO	540.00	POR PAGAR	\N	25	27
+85	INGRESO	540.00	POR PAGAR	\N	25	28
+86	INGRESO	540.00	POR PAGAR	\N	25	29
+87	INGRESO	540.00	POR PAGAR	\N	25	30
+88	INGRESO	540.00	POR PAGAR	\N	25	31
+89	INGRESO	540.00	POR PAGAR	\N	25	32
+90	INGRESO	540.00	POR PAGAR	\N	25	33
+91	INGRESO	540.00	POR PAGAR	\N	26	23
+92	INGRESO	540.00	POR PAGAR	\N	26	24
+93	INGRESO	540.00	POR PAGAR	\N	26	25
+94	INGRESO	540.00	POR PAGAR	\N	26	26
+95	INGRESO	540.00	POR PAGAR	\N	26	27
+96	INGRESO	540.00	POR PAGAR	\N	26	28
+97	INGRESO	540.00	POR PAGAR	\N	26	29
+98	INGRESO	540.00	POR PAGAR	\N	26	30
+99	INGRESO	540.00	POR PAGAR	\N	26	31
+100	INGRESO	540.00	POR PAGAR	\N	26	32
+101	INGRESO	540.00	POR PAGAR	\N	26	33
+109	INGRESO	540.00	POR PAGAR	\N	27	30
+110	INGRESO	540.00	POR PAGAR	\N	27	31
+111	INGRESO	540.00	POR PAGAR	\N	27	32
+112	INGRESO	540.00	POR PAGAR	\N	27	33
+102	INGRESO	540.00	PAGADO	2020-12-01	27	23
+80	INGRESO	540.00	PAGADO	2020-12-01	25	23
+116	INGRESO	450.00	POR PAGAR	\N	28	15
+117	INGRESO	450.00	POR PAGAR	\N	28	16
+118	INGRESO	450.00	POR PAGAR	\N	28	17
+119	INGRESO	450.00	POR PAGAR	\N	28	18
+120	INGRESO	450.00	POR PAGAR	\N	28	19
+121	INGRESO	450.00	POR PAGAR	\N	28	20
+122	INGRESO	450.00	POR PAGAR	\N	28	21
+123	INGRESO	450.00	POR PAGAR	\N	28	22
+113	INGRESO	450.00	PAGADO	2020-12-01	28	12
+114	INGRESO	450.00	PAGADO	2020-12-01	28	13
+115	INGRESO	450.00	PAGADO	2020-12-01	28	14
+103	INGRESO	540.00	PAGADO	2020-12-01	27	24
+104	INGRESO	540.00	PAGADO	2020-12-01	27	25
+105	INGRESO	540.00	PAGADO	2020-12-01	27	26
+81	INGRESO	540.00	PAGADO	2020-12-01	25	24
+128	INGRESO	300.00	POR PAGAR	\N	29	5
+129	INGRESO	300.00	POR PAGAR	\N	29	6
+130	INGRESO	300.00	POR PAGAR	\N	29	7
+131	INGRESO	300.00	POR PAGAR	\N	29	8
+132	INGRESO	300.00	POR PAGAR	\N	29	9
+133	INGRESO	300.00	POR PAGAR	\N	29	10
+134	INGRESO	300.00	POR PAGAR	\N	29	11
+106	INGRESO	540.00	PAGADO	2020-12-01	27	27
+107	INGRESO	540.00	PAGADO	2020-12-01	27	28
+108	INGRESO	540.00	PAGADO	2020-12-01	27	29
+124	INGRESO	300.00	PAGADO	2020-12-01	29	1
+125	INGRESO	300.00	PAGADO	2020-12-01	29	2
+126	INGRESO	300.00	PAGADO	2020-12-01	29	3
+127	INGRESO	300.00	PAGADO	2020-12-01	29	4
 \.
 
 
@@ -506,18 +530,11 @@ COPY public.movimiento (id_movimiento, tipo_movimiento, monto, estado, fecha_pag
 --
 
 COPY public.persona (id_persona, nom_persona, ape_pate_pers, ape_mate_pers, fecha_naci, foto_ruta, id_grado) FROM stdin;
-1	Clifford	Garate	Pardo	1999-07-13	foto.png	15
-2	Juan	Lopez	Perez	1998-05-23	image.png	5
-6	Juan	Lopez	Perez	1998-05-23	image.png	5
-7	Marcos	Lopez	Perez	1998-05-23	imageasdsdsadasdasdasdadsdsad.png	5
-8	Rodrigo	Sanchez	Ramal	2000-05-23	-mWp3KJDhOBycu54JprrTBmy.png	8
-9	Joel	Cruz	Ramal	1999-07-23	rO2_kr9HcwwD4lLstNrr8i2A.png	10
-10	Diego	Belaunde	Ramal	1999-07-23	gABti1ikYXYb3YJgTdOZkbo3.png	10
-11	Valeria	Belaunde	Rodriguez	1999-07-23	7njWY4Uaqe_th72E_mrA7YdB.png	14
-12	Chris	Garner	Reyes	2010-05-23	PBu_xf-TLf9f3XmNk66GjXtB.png	5
-13	Miguel	Ramirez	Palomino	2018-05-10	G6yypTuXQp2eE87AE4_xAI5V.png	2
-14	Miguel	Ramirez	Palomino	2018-05-10	s76cjBzCpEciB5SFEax5POCZ.png	2
-15	Miguel	Ramirez	Palomino	2018-05-10	Qm-h4Ml3Z751HwpTfSTg_alg.png	2
+25	Olinda	Petrovich	Marquez	2005-11-10	uAyrs-tgJBZCP_0io2VEimOD.jpeg	15
+26	Franchesca	Galvan	Guerrero	2003-01-08	_PjB_WmVgGUn6Yeo7FPXsgI1.jpg	16
+27	Brunella	Tasayco	Ibañez	2006-11-15	C73Rv26X4mSEMmjJ-rJbQOyt.jpeg	13
+28	Isabella	Perez	Gallo	2002-07-10	YHoMdlrKlVzWEafasEjgQwPE.jpg	7
+29	Rocio	Vega	Vega	2017-07-13	aeZqM7nxKcgIhQPPozknjUFO.jpg	3
 \.
 
 
@@ -546,14 +563,14 @@ SELECT pg_catalog.setval('public.grado_nid_grado_seq', 18, true);
 -- Name: movimiento_id_movimiento_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.movimiento_id_movimiento_seq', 35, true);
+SELECT pg_catalog.setval('public.movimiento_id_movimiento_seq', 134, true);
 
 
 --
 -- Name: persona_nid_persona_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.persona_nid_persona_seq', 15, true);
+SELECT pg_catalog.setval('public.persona_nid_persona_seq', 29, true);
 
 
 --

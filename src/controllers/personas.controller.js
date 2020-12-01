@@ -33,8 +33,11 @@ personas_controller.registrar_estudiantes = function (req, res) {
   if (extension_foto == 'jpg' || extension_foto == 'png' || extension_foto == 'jpeg') {
     pg.query(query, [nombre, ape_pat, ape_mat, fecha_nac, nombre_foto, id_grado], (err, id_estudiante) => {
       if (!err) {
+        console.log("id_estudiante: ", id_estudiante.rows[0].registrarestudiante)
+        console.log("nivel: ", nivel)
         pg.query(query2, [id_estudiante.rows[0].registrarestudiante, nivel],(err2, respuesta)=>{
           if(!err2){
+            console.log("respuesta de mov: ", respuesta)
             res.status(200).json({ status: 'Success', id_estudiante: id_estudiante.rows[0].registrarestudiante, code: 200 })
           }else{
             console.log("error2: ", err2)
